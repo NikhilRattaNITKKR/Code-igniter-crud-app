@@ -1,72 +1,73 @@
-<?php 
+<?php
 
 
 
-class Post_model extends CI_Model{
+class Post_model extends CI_Model
+{
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->load->database();
     }
-    public function get_posts($slug=FALSE){
-        if($slug===FALSE){
-            $query=$this->db->get('posts');
+    public function get_posts($slug = FALSE)
+    {
+        if ($slug === FALSE) {
+            $query = $this->db->get('posts');
             return $query->result_array();
         }
 
-        $query=$this->db->get_where('posts',array('slug'=>$slug));
+        $query = $this->db->get_where('posts', array('slug' => $slug));
         return $query->row_array();
-    }   
+    }
 
-    public function create_post(){
+    public function create_post($post_photo)
+    {
 
-        $title=$this->input->post('title');
-        $body=$this->input->post('body');
-        $slug=url_title($title);
+        $title = $this->input->post('title');
+        $body = $this->input->post('body');
+        $slug = url_title($title);
 
-        $data=[
-         'title' =>  $title,
-         'body' =>  $body, 
-         'slug' =>  $slug, 
+        $data = [
+            'title' =>  $title,
+            'body' =>  $body,
+            'slug' =>  $slug,
+            'post_photo' => $post_photo,
 
         ];
 
 
-       return $this->db->insert('posts',$data);
+        return $this->db->insert('posts', $data);
+    }
 
-    } 
+    public function delete_post($id)
+    {
 
-    public function delete_post($id){
+        $this->db->where('id', $id);
+        $this->db->delete('posts');
 
-     $this->db->where('id',$id);
-     $this->db->delete('posts');
-   
-     var_dump($id);
-     return $this->db->affected_rows()>0;
+        var_dump($id);
+        return $this->db->affected_rows() > 0;
+    }
+
+    public function edit_post($post_photo)
+    {
+
+        $title = $this->input->post('title');
+        $body = $this->input->post('body');
+        $id = $this->input->post('id');
 
 
-    } 
+        $slug = url_title($title);
 
-    public function edit_post(){
+        $data = [
+            'title' =>  $title,
+            'body' =>  $body,
+            'slug' =>  $slug,
+            'post_photo' => $post_photo,
 
-        $title=$this->input->post('title');
-        $body=$this->input->post('body');
-        $id=$this->input->post('id');
-        
-
-        $slug=url_title($title);
-
-        $data=[
-         'title' =>  $title,
-         'body' =>  $body, 
-         'slug' =>  $slug, 
         ];
 
-        $this->db->where('id',$id);
-       return $this->db->update('posts',$data);
-    } 
+        $this->db->where('id', $id);
+        return $this->db->update('posts', $data);
+    }
 }
-
-
-
-
-?>
