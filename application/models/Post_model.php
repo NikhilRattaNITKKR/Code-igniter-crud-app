@@ -24,11 +24,17 @@ class Post_model extends CI_Model
     {
 
         $title = $this->input->post('title');
+        $name = $this->input->post('name');
+        $email = $this->input->post('email');
+        $phone = $this->input->post('phone');
         $body = $this->input->post('body');
         $slug = url_title($title);
 
         $data = [
             'title' =>  $title,
+            'name' =>  $name,
+            'email' =>  $email,
+            'phone' =>  $phone,
             'body' =>  $body,
             'slug' =>  $slug,
             'post_photo' => $post_photo,
@@ -53,6 +59,9 @@ class Post_model extends CI_Model
     {
 
         $title = $this->input->post('title');
+        $name = $this->input->post('name');
+        $email = $this->input->post('email');
+        $phone = $this->input->post('phone');
         $body = $this->input->post('body');
         $id = $this->input->post('id');
 
@@ -61,6 +70,9 @@ class Post_model extends CI_Model
 
         $data = [
             'title' =>  $title,
+            'name' =>  $name,
+            'email' =>  $email,
+            'phone' =>  $phone,
             'body' =>  $body,
             'slug' =>  $slug,
             'post_photo' => $post_photo,

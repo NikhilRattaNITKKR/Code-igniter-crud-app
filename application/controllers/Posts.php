@@ -12,7 +12,6 @@ class Posts extends CI_Controller
         $this->db->order_by('id', 'DESC');
         $data['posts'] = $this->post_model->get_posts();
 
-        // var_dump($data['posts']);
 
         $this->load->view('templates/header');
         $this->load->view('posts/index', $data);
@@ -36,6 +35,15 @@ class Posts extends CI_Controller
 
         $data['title'] = 'Create Posts';
 
+        $data['posts'] = $this->post_model->get_posts();
+
+        $data['emails'] = [];   
+
+        foreach ($data['posts'] as $post) {
+
+            $data['emails'] = [...$data['emails'], $post['email']];
+        }
+
         $config['upload_path'] = './assets/images/posts';
         $config['allowed_types'] = 'gif|jpg|jpeg|png';
         $config['max_size'] = '2048';
@@ -47,8 +55,6 @@ class Posts extends CI_Controller
             $new_name = time() . $_FILES['userfile']['name'];
             $config['file_name'] = $new_name;
         }
-
-
 
 
         $this->load->library('upload', $config);
@@ -63,12 +69,12 @@ class Posts extends CI_Controller
         }
 
 
+        $this->form_validation->set_rules('title', 'Title', 'required|htmlspecialchars|is_unique[posts.title]');  //first is name of input field  second is for error messages that are human readable last is the rule that we want 
+        $this->form_validation->set_rules('name', 'Name', 'required|htmlspecialchars');
+        $this->form_validation->set_rules('email', 'Email',  'required|valid_email|is_unique[posts.email]|htmlspecialchars');
+        $this->form_validation->set_rules('phone', 'Phone', 'required|numeric|max_length[10]|min_length[10]|greater_than[0]|htmlspecialchars');
+        $this->form_validation->set_rules('body', 'Body', 'required|htmlspecialchars');
 
-
-
-
-        $this->form_validation->set_rules('title', 'Title', 'required');  //first is name of input field  second is for error messages that are human readable last is the rule that we want 
-        $this->form_validation->set_rules('body', 'Body', 'required');
 
         if ($this->form_validation->run() == FALSE) {
             $this->load->view('templates/header');
@@ -85,8 +91,6 @@ class Posts extends CI_Controller
     public function delete($id)
     {
 
-        var_dump($id);
-        echo " ytest";
         $this->post_model->delete_post($id);
 
 
@@ -106,34 +110,69 @@ class Posts extends CI_Controller
 
         $data['title'] = 'Edit Post';
 
-        $config['upload_path'] = './assets/images/posts';
-        $config['allowed_types'] = 'gif | jpg | jpeg | png ';
-        $config['max_size'] = '10';
-        $config['max_height'] = '500';
-        $config['max_width'] = '500';
 
 
-        $this->load->library('upload', $config);
+        $new_name = '';
+        $post_photo = $data['post']['post_photo'];
+        if (!empty($_FILES['userfile']['name'])) {
+            $new_name = time() . $_FILES['userfile']['name'];
+            $config['file_name'] = $new_name;
+            $config['upload_path'] = './assets/images/posts';
+            $config['allowed_types'] = 'gif|jpg|jpeg|png';
+            $config['max_size'] = '2048';
+            $config['max_height'] = '500';
+            $config['max_width'] = '500';
 
-        if (!$this->upload->do_upload()) {
-            $errors = array('error' => $this->upload->display_errors());
-            $post_photo = 'noimage.jpg';
-        } else {
-            $data = array('data' => $this->upload->data());
-            $post_photo = $_FILES['userfile']['name'];
+            $this->load->library('upload', $config);
+
+            if (!$this->upload->do_upload()) {
+                $errors = array('error' => $this->upload->display_errors());
+                $post_photo = 'noimage.jpg';
+                var_dump($errors);
+            } else {
+                $data = array('data' => $this->upload->data());
+                $post_photo = ($new_name === '') ? 'noimage.jpg' : $new_name;
+            }
         }
 
 
-        $this->form_validation->set_rules('title', 'Title', 'required');  //first is name of input field  second is for error messages that are human readable last is the rule that we want 
-        $this->form_validation->set_rules('body', 'Body', 'required');
+
+
+        $is_unique_email = '';
+        $is_unique_title =  '';
+
+
+        if (!empty($data['post'])) {
+
+
+            if ($this->input->post('email') != $data['post']['email']) {
+                $is_unique_email =  '|is_unique[posts.email]';
+            } else {
+                $is_unique_email =  '';
+            }
+            if ($this->input->post('title') != $data['post']['title']) {
+                $is_unique_title =  '|is_unique[posts.title]';
+            } else {
+                $is_unique_title =  '';
+            }
+        }
+
+
+        // $is_unique_email =  '|is_unique[posts.email]';
+
+        $this->form_validation->set_rules('title', 'Title', 'required|htmlspecialchars' . $is_unique_title);  //first is name of input field  second is for error messages that are human readable last is the rule that we want 
+        $this->form_validation->set_rules('name', 'Name', 'required|htmlspecialchars');
+        $this->form_validation->set_rules('email', 'Email',  'required|valid_email|htmlspecialchars' . $is_unique_email);
+        $this->form_validation->set_rules('phone', 'Phone', 'required|numeric|max_length[10]|min_length[10]|greater_than[0]|htmlspecialchars');
+        $this->form_validation->set_rules('body', 'Body', 'required|htmlspecialchars');
 
         if ($this->form_validation->run() == FALSE) {
+
             $this->load->view('templates/header');
             $this->load->view('posts/edit', $data);
             $this->load->view('templates/footer');
         } else {
             $this->post_model->edit_post($post_photo);
-
             redirect('posts');
         }
     }
