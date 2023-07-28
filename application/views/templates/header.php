@@ -41,3 +41,9 @@
     </nav>
 
     <div class="container">
+
+<?php if ($this->session->flashdata('post_created')) : ?>
+    
+    <p> <?= $this->session->flashdata('post_created') ?> </p>
+
+    <?php endif ; ?>

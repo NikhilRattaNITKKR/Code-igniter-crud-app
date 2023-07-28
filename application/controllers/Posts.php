@@ -84,6 +84,7 @@ class Posts extends CI_Controller
             $data['title'] = 'Post Created';
 
             $this->post_model->create_post($post_photo);
+            $this->session->set_flashdata('post_created','Post Has been created');
             redirect('posts');
         }
     }
@@ -173,6 +174,7 @@ class Posts extends CI_Controller
             $this->load->view('templates/footer');
         } else {
             $this->post_model->edit_post($post_photo);
+
             redirect('posts');
         }
     }
