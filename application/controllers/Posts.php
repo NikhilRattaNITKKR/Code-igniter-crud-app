@@ -37,11 +37,14 @@ class Posts extends CI_Controller
 
         $data['posts'] = $this->post_model->get_posts();
 
-        $data['emails'] = [];   
+        $data['emails'] = [];
+        $data['titles'] = [];
+
 
         foreach ($data['posts'] as $post) {
 
             $data['emails'] = [...$data['emails'], $post['email']];
+            $data['titles'] = [...$data['titles'], $post['title']];
         }
 
         $config['upload_path'] = './assets/images/posts';
@@ -84,7 +87,7 @@ class Posts extends CI_Controller
             $data['title'] = 'Post Created';
 
             $this->post_model->create_post($post_photo);
-            $this->session->set_flashdata('post_created','Post Has been created');
+            $this->session->set_flashdata('post_created', 'Post Has been created');
             redirect('posts');
         }
     }
@@ -110,6 +113,18 @@ class Posts extends CI_Controller
         $data['post'] = $this->post_model->get_posts($slug);
 
         $data['title'] = 'Edit Post';
+
+        $data['posts'] = $this->post_model->get_posts();
+
+        $data['emails'] = [];
+        $data['titles'] = [];
+
+
+        foreach ($data['posts'] as $post) {
+
+            $data['emails'] = [...$data['emails'], $post['email']];
+            $data['titles'] = [...$data['titles'], $post['title']];
+        }
 
 
 

@@ -10,7 +10,10 @@
     <h5>Title</h5>
   </label>
 
-  <input type="text" class="form-control" name="title" placeholder="Enter Title">
+  <input type="text" id="titke" class="form-control" name="title" placeholder="Enter Title">
+  <div class="invalid-feedback" id="title_div">
+
+  </div>
 </div>
 <div class="form-group mt-2">
   <label for="name">
@@ -60,6 +63,20 @@
 
 <script>
   var emails = <?= json_encode($emails) ?>;
+  var titles = <?= json_encode($titles) ?>;
+
+
+  $('#title').on('keyup ', (e) => {
+
+    if (titles.includes(e.target.value)) {
+
+      $('#title').addClass('is-invalid');
+      $('#title_div').html("This title is already in use. Please chose another");
+    } else {
+      $('#title_div').html("");
+      $('#title').removeClass('is-invalid');
+    }
+  })
 
 
   $('#email').on('keyup ', (e) => {

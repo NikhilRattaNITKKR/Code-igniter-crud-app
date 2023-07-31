@@ -40,10 +40,10 @@
                     title: 'Name'
                 },
                 {
-                    title: 'email'
+                    title: 'Email'
                 },
                 {
-                    title: 'phone'
+                    title: 'Phone'
                 },
                 {
                     title: 'Slug'
