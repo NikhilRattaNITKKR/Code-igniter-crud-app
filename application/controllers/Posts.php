@@ -1,17 +1,19 @@
 <?php
 
 class Posts extends CI_Controller
+
+
 {
 
     public function index()
+
     {
-
-
+        
         $data['title'] = 'Latest Posts';
 
         $this->db->order_by('id', 'DESC');
         $data['posts'] = $this->post_model->get_posts();
-
+        $this->load->library('datamodifier');
 
         $this->load->view('templates/header');
         $this->load->view('posts/index', $data);
@@ -19,7 +21,7 @@ class Posts extends CI_Controller
     }
 
     public function view($slug)
-    {
+    {   
 
         $data['post'] = $this->post_model->get_posts($slug);
 

@@ -65,8 +65,6 @@
   var titles = <?= json_encode($titles) ?>;
   var title = <?= json_encode($post['title']) ?>;
 
-
-
   $('#title').on('keyup ', (e) => {
 
     if (titles.includes(e.target.value) && e.target.value != title) {

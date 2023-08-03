@@ -10,7 +10,7 @@
     <h5>Title</h5>
   </label>
 
-  <input type="text" id="titke" class="form-control" name="title" placeholder="Enter Title">
+  <input type="text" id="title" class="form-control" name="title" placeholder="Enter Title">
   <div class="invalid-feedback" id="title_div">
 
   </div>
